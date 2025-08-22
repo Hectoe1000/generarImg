@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+     "cloudinary": "^2.6.0",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
