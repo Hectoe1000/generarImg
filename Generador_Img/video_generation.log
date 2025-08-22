@@ -1,0 +1,16 @@
+[2025-08-12T05:07:23.073Z] 🚀 Iniciando generación de video
+[2025-08-12T05:07:23.671Z] 📌 Respuesta inicial: {"data":{"task_id":"168c9706-14dc-4a2e-bffd-bbb91b9e7f54","status":"CREATED","generated":[]}}
+[2025-08-12T05:07:23.675Z] ⌛ Video en proceso. Task ID: 168c9706-14dc-4a2e-bffd-bbb91b9e7f54
+[2025-08-12T05:07:23.677Z] ⏳ Intento 1/6 - Esperando 30 segundos...
+[2025-08-12T05:07:53.684Z] 🔍 Intentando descarga desde: https://api.freepik.com/v1/ai/videos/168c9706-14dc-4a2e-bffd-bbb91b9e7f54/download
+[2025-08-12T05:07:54.074Z] 🔍 Verificando estado en: https://api.freepik.com/v1/ai/tasks/168c9706-14dc-4a2e-bffd-bbb91b9e7f54
+[2025-08-12T05:07:54.298Z] ⏳ Intento 2/6 - Esperando 60 segundos...
+[2025-08-12T05:08:54.300Z] 🔍 Intentando descarga desde: https://api.freepik.com/v1/ai/videos/168c9706-14dc-4a2e-bffd-bbb91b9e7f54/download
+[2025-08-12T05:08:54.644Z] 🔍 Verificando estado en: https://api.freepik.com/v1/ai/tasks/168c9706-14dc-4a2e-bffd-bbb91b9e7f54
+[2025-08-12T05:08:54.870Z] ⏳ Intento 3/6 - Esperando 120 segundos...
+[2025-08-12T05:10:54.878Z] 🔍 Intentando descarga desde: https://api.freepik.com/v1/ai/videos/168c9706-14dc-4a2e-bffd-bbb91b9e7f54/download
+[2025-08-12T05:10:55.240Z] 🔍 Verificando estado en: https://api.freepik.com/v1/ai/tasks/168c9706-14dc-4a2e-bffd-bbb91b9e7f54
+[2025-08-12T05:10:55.476Z] ⏳ Intento 4/6 - Esperando 240 segundos...
+[2025-08-12T05:14:55.488Z] 🔍 Intentando descarga desde: https://api.freepik.com/v1/ai/videos/168c9706-14dc-4a2e-bffd-bbb91b9e7f54/download
+[2025-08-12T05:14:55.847Z] 🔍 Verificando estado en: https://api.freepik.com/v1/ai/tasks/168c9706-14dc-4a2e-bffd-bbb91b9e7f54
+[2025-08-12T05:14:56.077Z] ⏳ Intento 5/6 - Esperando 300 segundos...
