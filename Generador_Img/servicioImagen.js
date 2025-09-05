@@ -18,6 +18,21 @@ cloudinary.config({
 });
 
 export async function generarImagenFinal({ prompt, titulo, subtitulo, precio, }) {
+  // Prompt fijo publicitario (predeterminado en backend)
+const basePrompt = `
+High-quality professional advertising design,
+modern marketing poster style,
+eye-catching composition,
+vibrant commercial colors,
+premium look, perfect for promotional campaigns
+`;
+
+// Prompt dinámico que llega desde frontend
+const userPrompt = prompt || "";
+
+// Fusión de ambos
+const finalPrompt = `${userPrompt}, ${basePrompt}`;
+
   try {
     // 1️⃣ Enviar prompt a Freepik
     const response = await axios.post(
@@ -33,7 +48,7 @@ export async function generarImagenFinal({ prompt, titulo, subtitulo, precio, })
         engine: "automatic",
         fixed_generation: false,
         filter_nsfw: true,
-        prompt,
+        prompt: finalPrompt
       },
       {
         headers: {
@@ -79,47 +94,82 @@ export async function generarImagenFinal({ prompt, titulo, subtitulo, precio, })
 
     const ofertainsignia = await sharp("insignia.png").resize(750).png().toBuffer();
     const rasgado = await sharp("rasgado.png").resize(800).png().toBuffer();
+const { width, height } = await base.metadata();
 
-
-    const overlay = Buffer.from(`
-<svg width="1600" height="1500">
+const fontSizeTitulo = Math.round(width * 0.18);
+const fontSizeSubtitulo = Math.round(width * 0.05);
+const posTitulo = Math.round(height * 0.55);     // 75% de la altura
+const posSubtitulo = Math.round(height * 0.60);  // 85% de la altura
+const overlay = Buffer.from(`
+<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   <style>
-  .titulo {
-    fill: url(#gradTitulo); /* Gradiente */
-    font-size: 300px;
-    font-weight: bold;
-    text-anchor: middle;
-    font-family: 'Impact', sans-serif;
-    stroke: #000; /* Borde negro */
-    stroke-width: 10px;
-    paint-order: stroke fill;
-    filter: drop-shadow(10px 10px 15px rgba(0,0,0,0.7)); /* Sombra */
-  }
-  .subtitulo {
-    fill: white;
-    font-size: 150px;
-    font-weight: bold;
-    text-anchor: middle;
-    font-family: 'Impact', sans-serif;
-    stroke: #000;
-    stroke-width: 6px;
-    paint-order: stroke fill;
-    filter: drop-shadow(6px 6px 10px rgba(0,0,0,0.6));
-  }
-</style>
+    .titulo {
+      fill: url(#gradTitulo);
+      font-size: ${fontSizeTitulo}px;
+      font-weight: 2000;
+      text-anchor: middle;
+      font-family: 'Impact', Arial Black, sans-serif;
+      stroke: #8B0000; /* borde rojo oscuro */
+      stroke-width: 8px;
+      paint-order: stroke fill;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      filter: url(#shadow);
+    }
+    .subtitulo {
+      fill: #ffffff;
+      font-size: ${fontSizeSubtitulo}px;
+      font-weight: 1200;
+      text-anchor: middle;
+      font-family: 'Arial Black', sans-serif;
+      stroke: #d84315; /* borde naranja/rojo */
+      stroke-width: 3px;
+      paint-order: stroke fill;
+      text-transform: uppercase;
+      filter: url(#glow);
+    }
+  </style>
+  <defs>
+    <!-- Degradado del título -->
+    <linearGradient id="gradTitulo" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff3d00;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff9800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffc107;stop-opacity:1" />
+    </linearGradient>
 
-<!-- Definimos un gradiente -->
-<defs>
-  <linearGradient id="gradTitulo" x1="0%" y1="0%" x2="0%" y2="100%">
-    <stop offset="0%" style="stop-color:#FFA500;stop-opacity:1" />
-    <stop offset="100%" style="stop-color:#FF4500;stop-opacity:1" />
-  </linearGradient>
-</defs>
+    <!-- Sombra -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="5" dy="10" result="offset"/>
+      <feFlood flood-color="#ff6f00" flood-opacity="0.7"/>
+      <feComposite in2="offset" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
 
-<text x="50%" y="1100" class="titulo">${titulo}</text>
-<text x="50%" y="1250" class="subtitulo">${subtitulo}</text>
+    <!-- Glow -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
 
-</svg>`);
+  <!-- Texto principal -->
+  <text x="50%" y="${posTitulo}" class="titulo">${titulo}</text>
+
+  <!-- Texto secundario -->
+  <text x="50%" y="${posSubtitulo}" class="subtitulo">${subtitulo}</text>
+</svg>
+
+
+`);
+
+
 
     const starburst = Buffer.from(`
 <svg width="1800" height="1500">
@@ -188,59 +238,7 @@ export async function generarImagenFinal({ prompt, titulo, subtitulo, precio, })
   }
 }
 
-
 // ////////////////////////////////////////////////////////////////////////////////
-
-
-// export async function generarVideoFinal({ imageUrl, prompt }) {
-//   try {
-//     // 1️⃣ Crear tarea en Freepik
-//     const response = await axios.post(
-//       "https://api.freepik.com/v1/ai/image-to-video/kling-v2-1-master",
-//       {
-//         image: imageUrl, // ✅ aquí usamos la URL subida
-//         prompt,
-//         cfg_scale: 0.5,
-//         duration: "5"
-//       },
-//       { headers: { "x-freepik-api-key": API_KEY } }
-//     );
-
-//     const taskId = response.data.data.task_id;
-//     console.log("🎬 Tarea de video creada con ID:", taskId);
-
-//     // 2️⃣ Polling hasta COMPLETED
-//     let status = "CREATED";
-//     let videoUrl = null;
-
-//     while (status !== "COMPLETED") {
-//       await new Promise((res) => setTimeout(res, 5000));
-//       const check = await axios.get(
-//         `https://api.freepik.com/v1/ai/image-to-video/kling-v2-1-master/${taskId}`,
-//         { headers: { "x-freepik-api-key": API_KEY } }
-//       );
-//       status = check.data.data.status;
-//       console.log("⏳ Estado actual:", status);
-
-//       if (status === "COMPLETED") {
-//         videoUrl = check.data.data.generated?.[0]?.url;
-//       }
-//     }
-
-//     if (!videoUrl) throw new Error("❌ Freepik no devolvió URL del video");
-
-//     console.log("✅ Video generado:", videoUrl);
-//     return videoUrl;
-
-//   } catch (error) {
-//     console.error("❌ Error en generarVideoFinal:", error.message);
-//     throw error;
-//   }
-// }
-
-
-
-
 
 // 1. Crear tarea de conversión imagen → video
 // 1. Crear tarea con kling-v2-1-master
